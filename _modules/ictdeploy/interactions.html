@@ -1,0 +1,258 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ictdeploy.interactions &#8212; ictdeploy  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ictdeploy.interactions</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GraphCreator&#39;</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">Node</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class defined to store the node&#39;s data into the networkx.MultiDiGraph() structure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">init_values</span><span class="p">,</span> <span class="n">is_first</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_values</span> <span class="o">=</span> <span class="n">init_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_first</span> <span class="o">=</span> <span class="n">is_first</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; -&gt; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">init_values</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GraphCreator"><a class="viewcode-back" href="../../ictdeploy.html#ictdeploy.interactions.GraphCreator">[docs]</a><span class="k">class</span> <span class="nc">GraphCreator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for gathering methods allowing the creation of a co-simulation graph</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_models</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a pandas.DataFrame() containing all information about the simulation nodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">node</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;meta&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="p">][</span><span class="s2">&quot;meta&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                    <span class="s2">&quot;to_set&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_models</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="p">][</span><span class="s2">&quot;meta&quot;</span><span class="p">]][</span><span class="s2">&quot;set_attrs&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;to_get&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_models</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="p">][</span><span class="s2">&quot;meta&quot;</span><span class="p">]][</span><span class="s2">&quot;get_attrs&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="p">][</span><span class="s2">&quot;image&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;wrapper&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="p">][</span><span class="s2">&quot;wrapper&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;files&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="p">][</span><span class="s2">&quot;files&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">model</span><span class="p">][</span><span class="s2">&quot;command&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;init_values&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">init_values</span><span class="p">,</span>
+                    <span class="s2">&quot;is_first&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">is_first</span>
+                <span class="p">}</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="p">},</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">links</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a pandas.DataFrame() containing all information about the links between the simulation nodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;get_node&quot;</span><span class="p">:</span> <span class="n">get_node</span><span class="p">,</span>
+                    <span class="s2">&quot;get_attr&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;link&quot;</span><span class="p">][</span><span class="s2">&quot;get_attr&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;set_node&quot;</span><span class="p">:</span> <span class="n">set_node</span><span class="p">,</span>
+                    <span class="s2">&quot;set_attr&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;link&quot;</span><span class="p">][</span><span class="s2">&quot;set_attr&quot;</span><span class="p">]</span>
+                <span class="p">}</span> <span class="k">for</span> <span class="n">get_node</span><span class="p">,</span> <span class="n">set_node</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="p">])</span>
+
+<div class="viewcode-block" id="GraphCreator.add_meta"><a class="viewcode-back" href="../../ictdeploy.html#ictdeploy.interactions.GraphCreator.add_meta">[docs]</a>    <span class="k">def</span> <span class="nf">add_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">set_attrs</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span> <span class="n">get_attrs</span><span class="o">=</span><span class="nb">list</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a meta-model defining attributes to set (inputs) and to get (outputs)</span>
+
+<span class="sd">        :param name: string defining the name of the meta-model</span>
+<span class="sd">        :param set_attrs: list of string, default: None</span>
+<span class="sd">        :param get_attrs: list of string, default: None</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_models</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;set_attrs&#39;</span><span class="p">:</span> <span class="n">set_attrs</span><span class="p">,</span>
+            <span class="s1">&#39;get_attrs&#39;</span><span class="p">:</span> <span class="n">get_attrs</span>
+        <span class="p">}</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Meta-model </span><span class="si">{}</span><span class="s2"> created.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">name</span>
+
+<div class="viewcode-block" id="GraphCreator.add_model"><a class="viewcode-back" href="../../ictdeploy.html#ictdeploy.interactions.GraphCreator.add_model">[docs]</a>    <span class="k">def</span> <span class="nf">add_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">files</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a model based on the corresponding meta-model</span>
+
+<span class="sd">        :param name: string defining the name of the model</span>
+<span class="sd">        :param meta: name of the corresponding meta-model</span>
+<span class="sd">        :param image: docker image containing environments with all the model&#39;s dependencies</span>
+<span class="sd">        :param wrapper: wrapper file for the model</span>
+<span class="sd">        :param command: optional command to add</span>
+<span class="sd">        :param files: optional files to add into the model&#39;s container</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;meta&#39;</span><span class="p">:</span> <span class="n">meta</span><span class="p">,</span>
+            <span class="s1">&#39;image&#39;</span><span class="p">:</span> <span class="n">image</span><span class="p">,</span>
+            <span class="s1">&#39;wrapper&#39;</span><span class="p">:</span> <span class="n">wrapper</span><span class="p">,</span>
+            <span class="s1">&#39;command&#39;</span><span class="p">:</span> <span class="n">command</span><span class="p">,</span>
+            <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="n">files</span>
+        <span class="p">}</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Model </span><span class="si">{}</span><span class="s2"> created.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">name</span>
+
+<div class="viewcode-block" id="GraphCreator.add_node"><a class="viewcode-back" href="../../ictdeploy.html#ictdeploy.interactions.GraphCreator.add_node">[docs]</a>    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">init_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_first</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a node based on the corresponding model</span>
+
+<span class="sd">        :param name: string defining the name of the node</span>
+<span class="sd">        :param model: name of the corresponding model</span>
+<span class="sd">        :param init_values: a dict mapping the initial values to the model&#39;s parameters, default: None</span>
+<span class="sd">        :param is_first: set to True if the node is in the first group of the simulation sequence, default: False</span>
+<span class="sd">        :return: the node&#39;s name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">init_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">init_values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">init_values</span><span class="p">,</span> <span class="n">is_first</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Node </span><span class="si">{}</span><span class="s2"> created.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="GraphCreator.add_link"><a class="viewcode-back" href="../../ictdeploy.html#ictdeploy.interactions.GraphCreator.add_link">[docs]</a>    <span class="k">def</span> <span class="nf">add_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_node</span><span class="p">,</span> <span class="n">set_node</span><span class="p">,</span> <span class="n">get_attr</span><span class="p">,</span> <span class="n">set_attr</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;unit&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a link between two node, defining attribute to get (output) and to set (input)</span>
+
+<span class="sd">        :param get_node: name of the node to get a value from</span>
+<span class="sd">        :param set_node: name of the node to set a value to</span>
+<span class="sd">        :param get_attr: name of the get_node&#39;s attribute to get</span>
+<span class="sd">        :param set_attr: name of the set_node&#39;s attribute to set</span>
+<span class="sd">        :param unit: , default: &quot;unit&quot; (without unit)</span>
+<span class="sd">        :return: nothing :)</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">get_node</span><span class="p">,</span> <span class="n">set_node</span><span class="p">,</span> <span class="n">link</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;get_attr&quot;</span><span class="p">:</span> <span class="n">get_attr</span><span class="p">,</span> <span class="s2">&quot;set_attr&quot;</span><span class="p">:</span> <span class="n">set_attr</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="n">unit</span><span class="p">})</span>
+
+<div class="viewcode-block" id="GraphCreator.add_multiple_links_between_two_nodes"><a class="viewcode-back" href="../../ictdeploy.html#ictdeploy.interactions.GraphCreator.add_multiple_links_between_two_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">add_multiple_links_between_two_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_node</span><span class="p">,</span> <span class="n">set_node</span><span class="p">,</span> <span class="n">get_attrs</span><span class="p">,</span> <span class="n">set_attrs</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create multiple links between two nodes, defining a list of attributes to get (outputs) and to set (inputs)</span>
+
+<span class="sd">        :param get_node: name of the node to get a value from</span>
+<span class="sd">        :param set_node: name of the node to set a value to</span>
+<span class="sd">        :param get_attrs: list of names of the get_node&#39;s attribute to get</span>
+<span class="sd">        :param set_attrs: list of names of the set_node&#39;s attribute to set</span>
+<span class="sd">        :param units: list of the corresponding attributes units</span>
+<span class="sd">        :return: nothing :)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">units</span><span class="p">:</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;unit&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_attrs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">get_attr</span><span class="p">,</span> <span class="n">set_attr</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">get_attrs</span><span class="p">,</span> <span class="n">set_attrs</span><span class="p">,</span> <span class="n">units</span><span class="p">):</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">get_node</span><span class="p">,</span> <span class="n">set_node</span><span class="p">,</span> <span class="n">get_attr</span><span class="p">,</span> <span class="n">set_attr</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GraphCreator.reset_graph"><a class="viewcode-back" href="../../ictdeploy.html#ictdeploy.interactions.GraphCreator.reset_graph">[docs]</a>    <span class="k">def</span> <span class="nf">reset_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete all nodes and links (without removing meta-models and models)</span>
+
+<span class="sd">        :return: nothing :)</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">interaction_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: a dict containing the information about the interaction between the nodes and the co-simulation graph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;to_set&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;to_get&quot;</span><span class="p">]</span>
+            <span class="p">}</span> <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()},</span>
+
+            <span class="s2">&quot;links&quot;</span><span class="p">:</span> <span class="p">[{</span>
+                <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;node&quot;</span><span class="p">:</span> <span class="n">link</span><span class="p">[</span><span class="s2">&quot;get_node&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;attribute&quot;</span><span class="p">:</span> <span class="n">link</span><span class="p">[</span><span class="s2">&quot;get_attr&quot;</span><span class="p">]},</span>
+                <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;node&quot;</span><span class="p">:</span> <span class="n">link</span><span class="p">[</span><span class="s2">&quot;set_node&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;attribute&quot;</span><span class="p">:</span> <span class="n">link</span><span class="p">[</span><span class="s2">&quot;set_attr&quot;</span><span class="p">]}</span>
+            <span class="p">}</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">link</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">links</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()]</span></div>
+        <span class="p">}</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Pablo Puerto.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

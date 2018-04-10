@@ -1,0 +1,54 @@
+ictdeploy package
+=================
+
+Submodules
+----------
+
+ictdeploy.base\_config module
+-----------------------------
+
+.. automodule:: ictdeploy.base_config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ictdeploy.core module
+---------------------
+
+.. automodule:: ictdeploy.core
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ictdeploy.deployment module
+---------------------------
+
+.. automodule:: ictdeploy.deployment
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ictdeploy.interactions module
+-----------------------------
+
+.. automodule:: ictdeploy.interactions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ictdeploy.results module
+------------------------
+
+.. automodule:: ictdeploy.results
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ictdeploy
+    :members:
+    :undoc-members:
+    :show-inheritance:

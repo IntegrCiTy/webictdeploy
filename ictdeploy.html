@@ -1,0 +1,738 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ictdeploy package &#8212; ictdeploy  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="ictdeploy" href="modules.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ictdeploy-package">
+<h1>ictdeploy package<a class="headerlink" href="#ictdeploy-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ictdeploy.base_config">
+<span id="ictdeploy-base-config-module"></span><h2>ictdeploy.base_config module<a class="headerlink" href="#module-ictdeploy.base_config" title="Permalink to this headline">¶</a></h2>
+<p>This file define basic configuration for RabbitMQ and Protobuf communication
+for the simulation nodes and the orchestrator nodes.</p>
+</div>
+<div class="section" id="module-ictdeploy.core">
+<span id="ictdeploy-core-module"></span><h2>ictdeploy.core module<a class="headerlink" href="#module-ictdeploy.core" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ictdeploy.core.Simulator">
+<em class="property">class </em><code class="descclassname">ictdeploy.core.</code><code class="descname">Simulator</code><a class="reference internal" href="_modules/ictdeploy/core.html#Simulator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.core.Simulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Main class to import for co-simulation running, it gathers all the useful methods.
+To be used as the following example:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">Sim</span><span class="p">()</span>
+
+<span class="n">sim</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">add_meta</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;BaseMeta&quot;</span><span class="p">,</span>
+    <span class="n">set_attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">],</span>
+    <span class="n">get_attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">sim</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">add_model</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;BaseModel&quot;</span><span class="p">,</span>
+    <span class="n">meta</span><span class="o">=</span><span class="s2">&quot;BaseMeta&quot;</span><span class="p">,</span>
+    <span class="n">image</span><span class="o">=</span><span class="s2">&quot;integrcity/ict-simple&quot;</span><span class="p">,</span>
+    <span class="n">wrapper</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="s2">&quot;wrappers&quot;</span><span class="p">,</span> <span class="s2">&quot;base_wrap.py&quot;</span><span class="p">),</span>
+    <span class="n">command</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="s2">&quot;files_to_add&quot;</span><span class="p">,</span> <span class="s2">&quot;empty_file_for_testing_purpose.txt&quot;</span><span class="p">)]</span>
+<span class="p">)</span>
+
+<span class="n">sim</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Base0&quot;</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;BaseModel&quot;</span><span class="p">,</span>
+    <span class="n">init_values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+    <span class="n">is_first</span><span class="o">=</span><span class="bp">True</span>
+<span class="p">)</span>
+
+<span class="n">sim</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Base1&quot;</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;BaseModel&quot;</span><span class="p">,</span>
+    <span class="n">init_values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">sim</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">get_node</span><span class="o">=</span><span class="s2">&quot;Base0&quot;</span><span class="p">,</span> <span class="n">get_attr</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">set_node</span><span class="o">=</span><span class="s2">&quot;Base1&quot;</span><span class="p">,</span> <span class="n">set_attr</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="n">get_node</span><span class="o">=</span><span class="s2">&quot;Base1&quot;</span><span class="p">,</span> <span class="n">get_attr</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">set_node</span><span class="o">=</span><span class="s2">&quot;Base0&quot;</span><span class="p">,</span> <span class="n">set_attr</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+
+<span class="n">grp0</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;Base0&quot;</span><span class="p">)</span>
+<span class="n">grp1</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;Base1&quot;</span><span class="p">)</span>
+
+<span class="n">sim</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="n">grp0</span><span class="p">,</span> <span class="n">grp1</span><span class="p">)</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">create_steps</span><span class="p">([</span><span class="mi">60</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="n">logs</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">run_simulation</span><span class="p">(</span><span class="n">server</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="s2">&quot;server.py&quot;</span><span class="p">))</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">([</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_logs</span><span class="p">(</span><span class="n">logs</span><span class="p">[</span><span class="s2">&quot;orc&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="s2">&quot;Simulation finished.&quot;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span>
+
+<span class="n">sim</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">connect_to_results_db</span><span class="p">()</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">get_results_by_pattern</span><span class="p">(</span><span class="s2">&quot;IN*Base0*&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="attribute">
+<dt id="ictdeploy.core.Simulator.RABBITMQ_ADMIN_PASSWORD">
+<code class="descname">RABBITMQ_ADMIN_PASSWORD</code><em class="property"> = 'admin'</em><a class="headerlink" href="#ictdeploy.core.Simulator.RABBITMQ_ADMIN_PASSWORD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Admin password for RabbitMQ</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.core.Simulator.RABBITMQ_OBNL_PASSWORD">
+<code class="descname">RABBITMQ_OBNL_PASSWORD</code><em class="property"> = 'obnl'</em><a class="headerlink" href="#ictdeploy.core.Simulator.RABBITMQ_OBNL_PASSWORD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default password for OBNL</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.core.Simulator.RABBITMQ_TOOL_PASSWORD">
+<code class="descname">RABBITMQ_TOOL_PASSWORD</code><em class="property"> = 'tool'</em><a class="headerlink" href="#ictdeploy.core.Simulator.RABBITMQ_TOOL_PASSWORD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tool password for RabbitMQ</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.core.Simulator.RUN_JSON_FILE">
+<code class="descname">RUN_JSON_FILE</code><em class="property"> = 'sequences_and_steps.json'</em><a class="headerlink" href="#ictdeploy.core.Simulator.RUN_JSON_FILE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for sequences and steps json file used by OBNL</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.core.Simulator.SCE_JSON_FILE">
+<code class="descname">SCE_JSON_FILE</code><em class="property"> = 'interaction_graph.json'</em><a class="headerlink" href="#ictdeploy.core.Simulator.SCE_JSON_FILE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default value for interaction graph json file used by OBNL</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.core.Simulator.UNITS">
+<code class="descname">UNITS</code><em class="property"> = {'hours': 3600, 'minutes': 60, 'seconds': 1}</em><a class="headerlink" href="#ictdeploy.core.Simulator.UNITS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dict used for time units conversion</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.core.Simulator.create_group">
+<code class="descname">create_group</code><span class="sig-paren">(</span><em>*nodes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/core.html#Simulator.create_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.core.Simulator.create_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a group for the simulation sequence verifying that none of the group’s nodes are directly connected</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nodes</strong> – some nodes names</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">selected nodes names as a list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.core.Simulator.create_sequence">
+<code class="descname">create_sequence</code><span class="sig-paren">(</span><em>*groups</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/core.html#Simulator.create_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.core.Simulator.create_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the simulation’s sequence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>groups</strong> – some groups as list of nodes (created by self.create_group)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">nothing :)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.core.Simulator.create_steps">
+<code class="descname">create_steps</code><span class="sig-paren">(</span><em>steps</em>, <em>unit='seconds'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/core.html#Simulator.create_steps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.core.Simulator.create_steps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the simulation’s steps</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>steps</strong> – list of simulation time-steps to run</li>
+<li><strong>unit</strong> – time unit of steps (default: seconds)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">nothing :)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.core.Simulator.deploy_aux">
+<code class="descname">deploy_aux</code><span class="sig-paren">(</span><em>client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/core.html#Simulator.deploy_aux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.core.Simulator.deploy_aux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deploy the Redis (results database) and the RabbitMQ (communication) containers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>client</strong> – Docker client (default: from local environment)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dict containing the logs of the Redis and the RabbitMQ containers as generators</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.core.Simulator.deploy_nodes">
+<code class="descname">deploy_nodes</code><span class="sig-paren">(</span><em>client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/core.html#Simulator.deploy_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.core.Simulator.deploy_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deploy and run the simulation nodes containers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>client</strong> – Docker client (default: from local environment)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dict containing the logs of the nodes containers as generators</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.core.Simulator.deploy_orchestrator">
+<code class="descname">deploy_orchestrator</code><span class="sig-paren">(</span><em>simulation='demotest'</em>, <em>client=None</em>, <em>server='server.py'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/core.html#Simulator.deploy_orchestrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.core.Simulator.deploy_orchestrator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deploy and configure the OBNL (orchestration) container</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>server</strong> – python script that run OBNL</li>
+<li><strong>client</strong> – Docker client (default: from local environment)</li>
+<li><strong>simulation</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">logs of the OBNL container as generator</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="ictdeploy.core.Simulator.get_logs">
+<em class="property">static </em><code class="descname">get_logs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/core.html#Simulator.get_logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.core.Simulator.get_logs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allow to transform generator of logs to readable list of str</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>logs</strong> – generator of logs from an other process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list of values given by the logs generator until “StopIteration”</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.core.Simulator.run_simulation">
+<code class="descname">run_simulation</code><span class="sig-paren">(</span><em>server</em>, <em>simulation='demotest'</em>, <em>client=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/core.html#Simulator.run_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.core.Simulator.run_simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the simulation, deploying RabbitMQ, Redis, OBNL and the simulation nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>simulation</strong> – name of the current simulation</li>
+<li><strong>server</strong> – link to the file that will be running OBNL</li>
+<li><strong>client</strong> – Docker client (default: from local environment)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dict containing the logs of RabbitMQ, Redis, OBNL and the simulation nodes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ictdeploy.deployment">
+<span id="ictdeploy-deployment-module"></span><h2>ictdeploy.deployment module<a class="headerlink" href="#module-ictdeploy.deployment" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ictdeploy.deployment.SimNodesCreator">
+<em class="property">class </em><code class="descclassname">ictdeploy.deployment.</code><code class="descname">SimNodesCreator</code><a class="reference internal" href="_modules/ictdeploy/deployment.html#SimNodesCreator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.deployment.SimNodesCreator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class for gathering methods allowing the deployment of simulation nodes</p>
+<dl class="attribute">
+<dt id="ictdeploy.deployment.SimNodesCreator.BASE_CONFIG">
+<code class="descname">BASE_CONFIG</code><em class="property"> = {'exchanges': {'obnl.local.node.': {'binding': ['obnl.local.node.']}, 'obnl.simulation.node.': {'binding': ['obnl.simulation.node.scheduler']}}, 'name': '', 'queues': {'obnl.simulation.node.': 'on_simulation', 'obnl.local.node.': 'on_local', 'obnl.data.node.': 'on_data'}}</em><a class="headerlink" href="#ictdeploy.deployment.SimNodesCreator.BASE_CONFIG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base configuration for Protobuf</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.deployment.SimNodesCreator.CLIENT">
+<code class="descname">CLIENT</code><em class="property"> = &lt;docker.client.DockerClient object&gt;</em><a class="headerlink" href="#ictdeploy.deployment.SimNodesCreator.CLIENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default docker client</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.deployment.SimNodesCreator.CONFIG_FILE">
+<code class="descname">CONFIG_FILE</code><em class="property"> = 'config_file.json'</em><a class="headerlink" href="#ictdeploy.deployment.SimNodesCreator.CONFIG_FILE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the Protobuf configuration file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.deployment.SimNodesCreator.HOST">
+<code class="descname">HOST</code><em class="property"> = '172.17.01'</em><a class="headerlink" href="#ictdeploy.deployment.SimNodesCreator.HOST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default host address for host of Redis and RabbitMQ</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.deployment.SimNodesCreator.INIT_VALUES_FILE">
+<code class="descname">INIT_VALUES_FILE</code><em class="property"> = 'init_values.json'</em><a class="headerlink" href="#ictdeploy.deployment.SimNodesCreator.INIT_VALUES_FILE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default name for the initial values json file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.deployment.SimNodesCreator.TMP_FOLDER">
+<code class="descname">TMP_FOLDER</code><em class="property"> = 'TMP_FOLDER'</em><a class="headerlink" href="#ictdeploy.deployment.SimNodesCreator.TMP_FOLDER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the temporary local folder</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.deployment.SimNodesCreator.create_volume">
+<code class="descname">create_volume</code><span class="sig-paren">(</span><em>node_name</em>, <em>init_values</em>, <em>*files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/deployment.html#SimNodesCreator.create_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.deployment.SimNodesCreator.create_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the local folder that will be “synchronized” with / mounted into the container</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_name</strong> – well… the name of the node</li>
+<li><strong>init_values</strong> – a dict mapping the initial values to the model’s parameters</li>
+<li><strong>files</strong> – bunch of files that need to be added to the container for running the wrapper</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the local path of the node’s folder</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.deployment.SimNodesCreator.deploy_node">
+<code class="descname">deploy_node</code><span class="sig-paren">(</span><em>node_name</em>, <em>node</em>, <em>node_folder</em>, <em>client</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/deployment.html#SimNodesCreator.deploy_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.deployment.SimNodesCreator.deploy_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deploy a simulation node, create and send command and mount the dedicated local volume into the container</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_name</strong> – well… the name of the node</li>
+<li><strong>node</strong> – a dict mapping all the necessary information to run the node (image, wrapper, etc.)</li>
+<li><strong>node_folder</strong> – the local path of the node’s folder</li>
+<li><strong>client</strong> – the Docker client</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a generator giving access to the node’s logs</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ictdeploy.interactions">
+<span id="ictdeploy-interactions-module"></span><h2>ictdeploy.interactions module<a class="headerlink" href="#module-ictdeploy.interactions" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ictdeploy.interactions.GraphCreator">
+<em class="property">class </em><code class="descclassname">ictdeploy.interactions.</code><code class="descname">GraphCreator</code><a class="reference internal" href="_modules/ictdeploy/interactions.html#GraphCreator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.interactions.GraphCreator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class for gathering methods allowing the creation of a co-simulation graph</p>
+<dl class="method">
+<dt id="ictdeploy.interactions.GraphCreator.add_link">
+<code class="descname">add_link</code><span class="sig-paren">(</span><em>get_node</em>, <em>set_node</em>, <em>get_attr</em>, <em>set_attr</em>, <em>unit='unit'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/interactions.html#GraphCreator.add_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.interactions.GraphCreator.add_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a link between two node, defining attribute to get (output) and to set (input)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>get_node</strong> – name of the node to get a value from</li>
+<li><strong>set_node</strong> – name of the node to set a value to</li>
+<li><strong>get_attr</strong> – name of the get_node’s attribute to get</li>
+<li><strong>set_attr</strong> – name of the set_node’s attribute to set</li>
+<li><strong>unit</strong> – , default: “unit” (without unit)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">nothing :)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.interactions.GraphCreator.add_meta">
+<code class="descname">add_meta</code><span class="sig-paren">(</span><em>name</em>, <em>set_attrs=[]</em>, <em>get_attrs=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/interactions.html#GraphCreator.add_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.interactions.GraphCreator.add_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a meta-model defining attributes to set (inputs) and to get (outputs)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – string defining the name of the meta-model</li>
+<li><strong>set_attrs</strong> – list of string, default: None</li>
+<li><strong>get_attrs</strong> – list of string, default: None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.interactions.GraphCreator.add_model">
+<code class="descname">add_model</code><span class="sig-paren">(</span><em>name</em>, <em>meta</em>, <em>image</em>, <em>wrapper</em>, <em>command</em>, <em>files</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/interactions.html#GraphCreator.add_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.interactions.GraphCreator.add_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a model based on the corresponding meta-model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – string defining the name of the model</li>
+<li><strong>meta</strong> – name of the corresponding meta-model</li>
+<li><strong>image</strong> – docker image containing environments with all the model’s dependencies</li>
+<li><strong>wrapper</strong> – wrapper file for the model</li>
+<li><strong>command</strong> – optional command to add</li>
+<li><strong>files</strong> – optional files to add into the model’s container</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.interactions.GraphCreator.add_multiple_links_between_two_nodes">
+<code class="descname">add_multiple_links_between_two_nodes</code><span class="sig-paren">(</span><em>get_node</em>, <em>set_node</em>, <em>get_attrs</em>, <em>set_attrs</em>, <em>units=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/interactions.html#GraphCreator.add_multiple_links_between_two_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.interactions.GraphCreator.add_multiple_links_between_two_nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create multiple links between two nodes, defining a list of attributes to get (outputs) and to set (inputs)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>get_node</strong> – name of the node to get a value from</li>
+<li><strong>set_node</strong> – name of the node to set a value to</li>
+<li><strong>get_attrs</strong> – list of names of the get_node’s attribute to get</li>
+<li><strong>set_attrs</strong> – list of names of the set_node’s attribute to set</li>
+<li><strong>units</strong> – list of the corresponding attributes units</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">nothing :)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.interactions.GraphCreator.add_node">
+<code class="descname">add_node</code><span class="sig-paren">(</span><em>name</em>, <em>model</em>, <em>init_values=None</em>, <em>is_first=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/interactions.html#GraphCreator.add_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.interactions.GraphCreator.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a node based on the corresponding model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – string defining the name of the node</li>
+<li><strong>model</strong> – name of the corresponding model</li>
+<li><strong>init_values</strong> – a dict mapping the initial values to the model’s parameters, default: None</li>
+<li><strong>is_first</strong> – set to True if the node is in the first group of the simulation sequence, default: False</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the node’s name</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.interactions.GraphCreator.interaction_graph">
+<code class="descname">interaction_graph</code><a class="headerlink" href="#ictdeploy.interactions.GraphCreator.interaction_graph" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a dict containing the information about the interaction between the nodes and the co-simulation graph</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.interactions.GraphCreator.links">
+<code class="descname">links</code><a class="headerlink" href="#ictdeploy.interactions.GraphCreator.links" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a pandas.DataFrame() containing all information about the links between the simulation nodes</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.interactions.GraphCreator.nodes">
+<code class="descname">nodes</code><a class="headerlink" href="#ictdeploy.interactions.GraphCreator.nodes" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a pandas.DataFrame() containing all information about the simulation nodes</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.interactions.GraphCreator.reset_graph">
+<code class="descname">reset_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/interactions.html#GraphCreator.reset_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.interactions.GraphCreator.reset_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all nodes and links (without removing meta-models and models)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">nothing :)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ictdeploy.results">
+<span id="ictdeploy-results-module"></span><h2>ictdeploy.results module<a class="headerlink" href="#module-ictdeploy.results" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="ictdeploy.results.SimResultsGetter">
+<em class="property">class </em><code class="descclassname">ictdeploy.results.</code><code class="descname">SimResultsGetter</code><a class="reference internal" href="_modules/ictdeploy/results.html#SimResultsGetter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.results.SimResultsGetter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class gathering methods allowing the collection of results</p>
+<dl class="method">
+<dt id="ictdeploy.results.SimResultsGetter.connect_to_results_db">
+<code class="descname">connect_to_results_db</code><span class="sig-paren">(</span><em>db=0</em>, <em>host='172.17.01'</em>, <em>port=6379</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/results.html#SimResultsGetter.connect_to_results_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.results.SimResultsGetter.connect_to_results_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate connection with Redis DB</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>db</strong> – </li>
+<li><strong>host</strong> – host where the Redis container is running</li>
+<li><strong>port</strong> – port where the Redis container is listening</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">nothing :)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ictdeploy.results.SimResultsGetter.get_results_by_pattern">
+<code class="descname">get_results_by_pattern</code><span class="sig-paren">(</span><em>pattern</em>, <em>origin='2015-01-01'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ictdeploy/results.html#SimResultsGetter.get_results_by_pattern"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ictdeploy.results.SimResultsGetter.get_results_by_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allow to get results from a given name pattern</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pattern</strong> – the pattern used to query the Redis DB</li>
+<li><strong>origin</strong> – start date for the simulation time index, default: ‘2015-01-01’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dict mapping results name with pandas.Series() of values</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ictdeploy.results.SimResultsGetter.list_of_available_results">
+<code class="descname">list_of_available_results</code><a class="headerlink" href="#ictdeploy.results.SimResultsGetter.list_of_available_results" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a pandas.DataFrame() describing the available results by nodes</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ictdeploy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ictdeploy" title="Permalink to this headline">¶</a></h2>
+<p>This module facilitate the creation of multiple containers
+with specific environments.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">ictdeploy package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-ictdeploy.base_config">ictdeploy.base_config module</a></li>
+<li><a class="reference internal" href="#module-ictdeploy.core">ictdeploy.core module</a></li>
+<li><a class="reference internal" href="#module-ictdeploy.deployment">ictdeploy.deployment module</a></li>
+<li><a class="reference internal" href="#module-ictdeploy.interactions">ictdeploy.interactions module</a></li>
+<li><a class="reference internal" href="#module-ictdeploy.results">ictdeploy.results module</a></li>
+<li><a class="reference internal" href="#module-ictdeploy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">ictdeploy</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">ictdeploy</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ictdeploy.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Pablo Puerto.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/ictdeploy.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
